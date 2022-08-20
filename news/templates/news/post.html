@@ -1,0 +1,81 @@
+<!-- наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+
+{% extends 'news/layout.html' %}
+
+{% load custom_filters %}
+<!-- Название у нас будет proudcts -->
+
+{% block title %} Post {% endblock title %}
+
+{% block content %}
+
+<a href="{% url 'news:post_edit' post.id %}">
+  <button class="pure-button button-warning">
+
+    <i class="bi bi-pencil-square"></i>
+    Edit
+  </button>
+</a>
+<a href="{% url 'news:post_delete' post.id %}">
+  <button class="pure-button button-error">
+    <i class="bi bi-trash"></i>
+    Delete
+  </button>
+</a>
+
+
+<section class="post">
+  <header class="post-header"><img class="post-avatar" src="/{{  post.author.avatar }}" alt="avatar" />
+    <h2 class="post-title">{{post.title|censor}}</h2>
+    <p class="post-meta">By
+      <a class="post-author" href="{% url 'news:author_name' post.author.id %}">
+        <strong>
+          {{ post.author }}
+        </strong>
+      </a>on
+
+      <em>{{ post.dateCreated|date:'d M Y H:i'}}. </em>
+      Type:
+      <a class="post-category post-type-{{post.categoryType}}" href="{% url 'news:post_type' post.categoryType %}">
+        {{post.get_categoryType_display}}
+      </a>
+      Tags:
+      {%for tag in post.postCategory.values%}
+      <a class="post-category post-category-{{tag.id}}" href="{% url 'news:post_tag' tag.id %}">
+        {{tag.name}}</a>
+      </a>
+      {%endfor%}
+      <span>
+        Author rating: {{post.author.authorRating}}
+      </span>
+    </p>
+  </header>
+  <div class="post-description">
+    <p>{{ post.text|censor }}</p>
+    <p>Likes: <em>{{ post.rating }}</em></p>
+  </div>
+
+
+
+  <div class="comments">
+    <h3 class="comment-heading">Comments:</h3>
+    {% if post.comment_set.all %}
+    {% for comment in post.comment_set.all %}
+    <div class="comment-wrapper">
+      <div class="comment">
+        <p class="comment-text">{{ comment.text|censor }} </p>
+        <p>Likes: {{ comment.rating }}</p>
+        <p class="comment-info">Comment author:
+          <b>{{ comment.commentUser.username }} </b><span>on </span>
+          <em>{{ comment.dateCreated|date:'d M Y' }} </em>
+        </p>
+      </div><img class="comment-avatar" src="/{{  comment.commentUser.author.avatar }}" alt="avatar" />
+    </div>
+    <hr />
+    {% endfor %}
+    {% else %}
+    <p class="comment-heading">No comments yet.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock content %}

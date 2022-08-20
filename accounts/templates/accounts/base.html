@@ -1,0 +1,27 @@
+from django.contrib import admin
+
+{% extends '../../../news/templates/news/layout.html' %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+  <title>
+    {% block head_title %}{% endblock head_title %}
+  </title>
+</head>
+
+<body>
+  {% block head_link %}
+  {% endblock head_link %}
+  {% block body %}
+  {% block content %}
+  {% endblock content %}
+  {% endblock body %}
+  {% block extra_body %}
+  {% endblock extra_body %}
+
+</body>
+
+</html>

@@ -1,0 +1,132 @@
+<!--наследуемся от шаблона default.html, который мы создавали ещё во времена flatpages -->
+{% extends 'news/layout.html' %}
+{% load custom_filters %}
+<!--   Название у нас будет  -->
+{% block title %} The news {% endblock title %}
+<!--   block -->
+{% block content %}
+<!--  loop -->
+<h3 class="content-subhead">
+  Found
+  {{filter.qs|length}} posts on query:
+  <span>{{ name }}</span>
+</h3>
+
+{% if name.id %}
+<div class="subscribe">
+  <strong>
+    Subscribe to
+    <em>{{ name }}</em>?
+  </strong>
+  <a href="{% url 'news:sub_cat' name.id %}">
+    <button class="pure-button button-success">
+      <i class="bi bi-bookmark-plus"></i>
+      Subscribe
+    </button>
+  </a>
+</div>
+{% endif %}
+
+{% if is_paginated %}
+
+<!-- Если доступна предыдущая страница, то даём ссылку на неё и самую первую страницу -->
+<div class="mx-auto d-flex justify-content-center">
+  <div class="pure-button-group" role="group" aria-label="...">
+
+    {% if page_obj.has_previous %}
+
+    <a class="page-link" href="?page=1">
+      <button class="pure-button button-secondary">
+        First
+      </button>
+    </a>
+    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+      <button class="pure-button button-secondary">
+        &laquo;
+      </button>
+    </a>
+
+    {% endif %}
+
+    <!-- Показываем только текущую страницу и ближайшие к ней, чтобы список не тянулся и не захламлял страницу -->
+    {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}
+    <a class="page-link" href="#">
+      <button class="pure-button button-secondary pure-button-active">
+        {{ num }}
+      </button>
+    </a>
+
+
+    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <a class="page-link"
+      href="?page={{ num }}">
+      <button class="pure-button button-secondary">
+        {{ num }}
+      </button>
+      </a>
+      {% endif %}
+      {% endfor %}
+
+      <!-- Если есть следующая страница, то даём ссылку на неё и на самую последнюю страницу -->
+      {% if page_obj.has_next %}
+      <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+        <button class="pure-button button-secondary">
+          &raquo;
+        </button>
+      </a>
+
+      <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+        <button class="pure-button button-secondary">
+          Last
+        </button>
+      </a>
+
+      {% endif %}
+  </div>
+</div>
+{% endif %}
+
+
+<hr>
+
+{% for n in posts %}
+
+<!--  A single blog post -->
+<section class="post">
+  <header class="post-header"><img class="post-avatar" src="/{{  n.author.avatar }}" alt="avatar" />
+    <a href="{% url 'news:post_view' n.id %}">
+      <h2 class="post-title">{{n.title|censor}}</h2>
+    </a>
+    <p class="post-meta">By
+      <a class="post-author" href="{% url 'news:author_name' n.author_id %}">
+        {{ n.author }}
+      </a>
+      on
+      <em>{{ n.dateCreated|date:'d M Y H:i' }}
+      </em>
+      Type:
+      <a class="post-category post-type-{{n.categoryType}}" href="{% url 'news:post_type' n.categoryType %}">
+        <span>
+          {{n.get_categoryType_display}}
+        </span>
+      </a>
+      Tags:
+      {% for tag in n.postCategory.values %}
+      <a class="post-category post-category-{{tag.id}}" href="{% url 'news:post_tag' tag.id %}">
+        {{tag.name }}
+      </a>
+      {%endfor%}
+    </p>
+  </header>
+  <div class="post-description">
+    <p>{{ n.text|censor | truncatewords:25 }}</p>
+    <p><em>Article rating: {{n.rating}} </em></p>
+  </div>
+</section>
+<hr />
+
+{%endfor%}
+
+
+
+{% endblock content %}

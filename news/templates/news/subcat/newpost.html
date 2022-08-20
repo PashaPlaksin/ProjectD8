@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Friendly Reminder</title>
+</head>
+
+<body>
+  <h1>News Portal subscription</h1>
+  <p>In category: <strong>"{{category_object.name}}"</strong> there is a new post by
+    <strong>{{post_object.author}}</strong>.
+  </p>
+  <a href="https://newsportal.com{% url 'news:post_view' post_object.id %}">
+    <h2>{{post_object.title}}</h2>
+  </a>
+  <p>{{post_object.email_preview}}</p>
+
+</body>
+
+</html>

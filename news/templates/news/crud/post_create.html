@@ -1,0 +1,30 @@
+{% extends 'news/layout.html' %}
+{% block title %}
+Post Create
+{% endblock title %}
+
+{% block content %}
+<h3>New Post</h3>
+{{messages.values}}
+<form method="POST">
+  {% csrf_token %}
+  {{ form }}
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>
+      {{ message }}
+      </li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+  <!-- Теперь нам нужна только готовая форма и кнопка -->
+  <br>
+  <br>
+  <button class="pure-button button-success">
+    <i class="bi bi-check2-square"></i>
+    Submit
+  </button>
+  <!-- <input type="submit" value="Добавить товар"> -->
+</form>
+{% endblock content %}

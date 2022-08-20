@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Digest</title>
+</head>
+
+<body>
+  <h1>News Portal weekly digest</h1>
+  {%for category in category_object%}
+  <p>In category: <strong>"{{category}}"</strong></p>
+  <p>there are new posts</p>
+  {% for post in post_object %}
+  {% for post_cat in post.postCategory.all %}
+  {% if post_cat == category%}
+  <a href="https://newsportal.com{% url 'news:post_view' post.id %}">
+    <h2>
+      {{post.title}}
+    </h2>
+  </a>
+  <p>by {{post.author}}</p>
+  <p>{{post.email_preview}}</p>
+  {%endif%}
+  {%endfor%}
+  {%endfor%}
+  {%endfor%}
+</body>
+
+</html>

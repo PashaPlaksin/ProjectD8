@@ -1,0 +1,77 @@
+{% extends 'news/layout.html' %}
+{% load custom_filters %}
+<!--   Название у нас будет  -->
+{% block title %} The news {% endblock title %}
+<!--   block -->
+{% block content %}
+<h3 class="content-subhead">
+  Total Posts
+  <span>{{ posts|length }}</span>
+</h3>
+<!-- Перед таблицей добавим форму для поиска -->
+<form class="pure-form" method="GET">
+  <fieldset>
+
+    {{ filter.form }}
+    <!-- Форму от фильтров за нас сделает django. А вот кнопку, увы придётся делать самому -->
+  </fieldset>
+
+  <button class="pure-button button-secondary">
+    Найти
+  </button>
+</form>
+<!--  loop -->
+<p>
+  {{filter.categoryType}}
+</p>
+<p>
+  {{filter.qs.categoryType }}
+</p>
+{% if filter == null %}
+<h3>
+  no posts
+</h3>
+{%else%}
+<h3 class="content-subhead">
+  Posts Found
+  <span>{{ filter.qs|length }}</span>
+</h3>
+{% for n in filter.qs %}
+<!--  A single blog post -->
+<section class="post">
+  <header class="post-header"><img class="post-avatar" src="/{{  n.author.avatar }}" alt="avatar" />
+    <a href="{% url 'news:post_view' n.id%}">
+      <h2 class="post-title">{{n.title|censor}}</h2>
+    </a>
+    <p class="post-meta">By
+      <a class="post-author" href="{% url 'news:author_name' n.author.id%}">
+        {{ n.author.authorUsername }}
+      </a>
+      on
+      <i>{{ n.dateCreated|date:'d M Y H:i' }}
+      </i>
+      Type:
+      <a class="post-category post-type-{{n.categoryType}}" href="{% url 'news:post_type' n.categoryType %}">
+        <span>
+          {{n.get_categoryType_display}}
+        </span>
+      </a>
+      Tags:
+      {% for tag in n.postCategory.values %}
+      <a class="post-category post-category-{{tag.id}}" href="{% url 'news:post_tag' tag.id %}">
+        {{tag.name }}
+      </a>
+      {%endfor%}
+
+    </p>
+  </header>
+  <div class="post-description">
+    <p>{{ n.text|censor | truncatewords:25 }}</p>
+    <p><em>Article rating: {{n.rating}} </em></p>
+  </div>
+</section>
+<hr />
+{%endfor%}
+{%endif%}
+
+{% endblock content %}

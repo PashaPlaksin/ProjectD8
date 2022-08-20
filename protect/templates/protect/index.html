@@ -1,0 +1,34 @@
+{% extends "news/layout.html" %}
+
+{% block content %}
+<h2>Страница авторизованного пользователя
+  <strong>
+    {{request.user.username}}
+  </strong>
+</h2>
+<div>
+  To manage your subscriptions
+  <a href="{% url 'news:profile'  %}">
+    click here
+  </a>
+
+</div>
+
+{% if is_not_authors %}
+
+<p>
+  If you want to be an author and post in this blog, press the button below
+</p>
+<a href="{% url 'sign:upgrade' %}">
+  <button class="button-warning pure-button">
+    Make me an Author!
+  </button>
+</a>
+{% endif %}
+
+<a href="{% url 'sign:logout' %}">
+  <button class="button-primary pure-button">
+    Выйти
+  </button>
+</a>
+{% endblock %}
